@@ -1,0 +1,51 @@
+import { Controller, Get, Post, Body, Put, Param, Delete, Query, UseGuards } from '@nestjs/common';
+import { LocationsService } from './locations.service';
+import { CreateLocationDto, UpdateLocationDto } from './dto/location.dto';
+import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
+import { ApiTags, ApiOperation, ApiBearerAuth, ApiQuery } from '@nestjs/swagger';
+
+@ApiTags('locations')
+@ApiBearerAuth()
+@UseGuards(JwtAuthGuard)
+@Controller('locations')
+export class LocationsController {
+  constructor(private readonly locationsService: LocationsService) {}
+
+  @Post()
+  @ApiOperation({ summary: 'Create a new location' })
+  create(@Body() createLocationDto: CreateLocationDto) {
+    return this.locationsService.create(createLocationDto);
+  }
+
+  @Get('dropdown')
+  @ApiOperation({ summary: 'Get lightweight list of active locations' })
+  getDropdown() {
+    return this.locationsService.getDropdown();
+  }
+
+  @Get()
+  @ApiOperation({ summary: 'Get all locations' })
+  @ApiQuery({ name: 'isActive', required: false })
+  @ApiQuery({ name: 'type', required: false })
+  findAll(@Query() query: any) {
+    return this.locationsService.findAll(query);
+  }
+
+  @Get(':id')
+  @ApiOperation({ summary: 'Get a location by id' })
+  findOne(@Param('id') id: string) {
+    return this.locationsService.findOne(id);
+  }
+
+  @Put(':id')
+  @ApiOperation({ summary: 'Update a location' })
+  update(@Param('id') id: string, @Body() updateLocationDto: UpdateLocationDto) {
+    return this.locationsService.update(id, updateLocationDto);
+  }
+
+  @Delete(':id')
+  @ApiOperation({ summary: 'Soft delete a location' })
+  remove(@Param('id') id: string) {
+    return this.locationsService.remove(id);
+  }
+}
