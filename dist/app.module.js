@@ -20,6 +20,7 @@ const vehicles_module_1 = require("./vehicles/vehicles.module");
 const bookings_module_1 = require("./bookings/bookings.module");
 const job_cards_module_1 = require("./job-cards/job-cards.module");
 const analytics_module_1 = require("./analytics/analytics.module");
+const reminders_module_1 = require("./reminders/reminders.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -42,6 +43,7 @@ exports.AppModule = AppModule = __decorate([
             bookings_module_1.BookingsModule,
             job_cards_module_1.JobCardsModule,
             analytics_module_1.AnalyticsModule,
+            reminders_module_1.RemindersModule,
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService],

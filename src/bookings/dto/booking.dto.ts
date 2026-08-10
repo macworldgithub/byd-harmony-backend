@@ -1,5 +1,5 @@
-import { IsNotEmpty, IsOptional, IsString, IsEnum, IsDateString, IsMongoId } from 'class-validator';
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { IsNotEmpty, IsOptional, IsString, IsEnum, IsDateString, IsMongoId, IsNumber } from 'class-validator';
+import { ApiProperty, ApiPropertyOptional, PartialType } from '@nestjs/swagger';
 
 export class CreateBookingDto {
   @ApiProperty()
@@ -20,22 +20,47 @@ export class CreateBookingDto {
   @ApiProperty()
   @IsNotEmpty()
   @IsDateString()
-  serviceDateTime: Date;
+  scheduledAt: Date;
 
-  @ApiProperty({ enum: ['routine_service', 'repair', 'warranty', 'recall', 'inspection', 'delivery'] })
-  @IsNotEmpty()
-  @IsEnum(['routine_service', 'repair', 'warranty', 'recall', 'inspection', 'delivery'])
-  serviceType: string;
+  @ApiPropertyOptional({ default: 60 })
+  @IsOptional()
+  @IsNumber()
+  estimatedDuration?: number;
+
+  @ApiPropertyOptional({ enum: ['routine', 'repair', 'warranty', 'recall', 'inspection', 'pre_delivery'], default: 'routine' })
+  @IsOptional()
+  @IsEnum(['routine', 'repair', 'warranty', 'recall', 'inspection', 'pre_delivery'])
+  serviceType?: string;
 
   @ApiPropertyOptional()
   @IsOptional()
   @IsString()
-  serviceDetails?: string;
+  description?: string;
 
-  @ApiPropertyOptional({ enum: ['pending', 'confirmed', 'in_progress', 'completed', 'cancelled'], default: 'pending' })
+  @ApiPropertyOptional({ enum: ['scheduled', 'confirmed', 'in_progress', 'completed', 'cancelled', 'no_show'], default: 'scheduled' })
   @IsOptional()
-  @IsEnum(['pending', 'confirmed', 'in_progress', 'completed', 'cancelled'])
+  @IsEnum(['scheduled', 'confirmed', 'in_progress', 'completed', 'cancelled', 'no_show'])
   status?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsNumber()
+  assignedTechnicianId?: number;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  customerNotes?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  internalNotes?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsDateString()
+  completedAt?: Date;
 }
 
-export class UpdateBookingDto extends CreateBookingDto {}
+export class UpdateBookingDto extends PartialType(CreateBookingDto) {}

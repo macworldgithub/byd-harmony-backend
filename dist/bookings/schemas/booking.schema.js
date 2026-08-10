@@ -19,10 +19,15 @@ let Booking = class Booking {
     customerId;
     vehicleId;
     locationId;
-    serviceDateTime;
+    scheduledAt;
+    estimatedDuration;
     serviceType;
-    serviceDetails;
+    description;
     status;
+    assignedTechnicianId;
+    customerNotes;
+    internalNotes;
+    completedAt;
     isDeleted;
 };
 exports.Booking = Booking;
@@ -41,19 +46,39 @@ __decorate([
 __decorate([
     (0, mongoose_1.Prop)({ required: true }),
     __metadata("design:type", Date)
-], Booking.prototype, "serviceDateTime", void 0);
+], Booking.prototype, "scheduledAt", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ required: true, enum: ['routine_service', 'repair', 'warranty', 'recall', 'inspection', 'delivery'] }),
+    (0, mongoose_1.Prop)({ default: 60 }),
+    __metadata("design:type", Number)
+], Booking.prototype, "estimatedDuration", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ required: true, enum: ['routine', 'repair', 'warranty', 'recall', 'inspection', 'pre_delivery'], default: 'routine' }),
     __metadata("design:type", String)
 ], Booking.prototype, "serviceType", void 0);
 __decorate([
     (0, mongoose_1.Prop)(),
     __metadata("design:type", String)
-], Booking.prototype, "serviceDetails", void 0);
+], Booking.prototype, "description", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ enum: ['pending', 'confirmed', 'in_progress', 'completed', 'cancelled'], default: 'pending' }),
+    (0, mongoose_1.Prop)({ enum: ['scheduled', 'confirmed', 'in_progress', 'completed', 'cancelled', 'no_show'], default: 'scheduled' }),
     __metadata("design:type", String)
 ], Booking.prototype, "status", void 0);
+__decorate([
+    (0, mongoose_1.Prop)(),
+    __metadata("design:type", Number)
+], Booking.prototype, "assignedTechnicianId", void 0);
+__decorate([
+    (0, mongoose_1.Prop)(),
+    __metadata("design:type", String)
+], Booking.prototype, "customerNotes", void 0);
+__decorate([
+    (0, mongoose_1.Prop)(),
+    __metadata("design:type", String)
+], Booking.prototype, "internalNotes", void 0);
+__decorate([
+    (0, mongoose_1.Prop)(),
+    __metadata("design:type", Date)
+], Booking.prototype, "completedAt", void 0);
 __decorate([
     (0, mongoose_1.Prop)({ default: false }),
     __metadata("design:type", Boolean)

@@ -18,16 +18,31 @@ export class Booking {
   locationId: Location;
 
   @Prop({ required: true })
-  serviceDateTime: Date;
+  scheduledAt: Date;
 
-  @Prop({ required: true, enum: ['routine_service', 'repair', 'warranty', 'recall', 'inspection', 'delivery'] })
+  @Prop({ default: 60 })
+  estimatedDuration: number;
+
+  @Prop({ required: true, enum: ['routine', 'repair', 'warranty', 'recall', 'inspection', 'pre_delivery'], default: 'routine' })
   serviceType: string;
 
   @Prop()
-  serviceDetails: string;
+  description: string;
 
-  @Prop({ enum: ['pending', 'confirmed', 'in_progress', 'completed', 'cancelled'], default: 'pending' })
+  @Prop({ enum: ['scheduled', 'confirmed', 'in_progress', 'completed', 'cancelled', 'no_show'], default: 'scheduled' })
   status: string;
+
+  @Prop()
+  assignedTechnicianId: number;
+
+  @Prop()
+  customerNotes: string;
+
+  @Prop()
+  internalNotes: string;
+
+  @Prop()
+  completedAt: Date;
 
   @Prop({ default: false })
   isDeleted: boolean;

@@ -28,7 +28,7 @@ export class BookingsService {
       startDate.setHours(0, 0, 0, 0);
       const endDate = new Date(query.date);
       endDate.setHours(23, 59, 59, 999);
-      filter.serviceDateTime = { $gte: startDate, $lte: endDate };
+      filter.scheduledAt = { $gte: startDate, $lte: endDate };
     }
 
     const [data, total] = await Promise.all([

@@ -7,10 +7,15 @@ export declare class Booking {
     customerId: Customer;
     vehicleId: Vehicle;
     locationId: Location;
-    serviceDateTime: Date;
+    scheduledAt: Date;
+    estimatedDuration: number;
     serviceType: string;
-    serviceDetails: string;
+    description: string;
     status: string;
+    assignedTechnicianId: number;
+    customerNotes: string;
+    internalNotes: string;
+    completedAt: Date;
     isDeleted: boolean;
 }
 export declare const BookingSchema: import("mongoose").Schema<Booking, import("mongoose").Model<Booking, any, any, any, any, any, Booking>, {}, {}, {}, {}, import("mongoose").DefaultSchemaOptions, Booking, Document<unknown, {}, Booking, {
@@ -49,7 +54,16 @@ export declare const BookingSchema: import("mongoose").Schema<Booking, import("m
     }, "id"> & import("mongoose").HydratedDocumentOverrides<{
         id: string;
     }>> | undefined;
-    serviceDateTime?: import("mongoose").SchemaDefinitionProperty<Date, Booking, Document<unknown, {}, Booking, {
+    scheduledAt?: import("mongoose").SchemaDefinitionProperty<Date, Booking, Document<unknown, {}, Booking, {
+        id: string;
+    }, import("mongoose").DefaultSchemaOptions> & Omit<Booking & {
+        _id: Types.ObjectId;
+    } & {
+        __v: number;
+    }, "id"> & import("mongoose").HydratedDocumentOverrides<{
+        id: string;
+    }>> | undefined;
+    estimatedDuration?: import("mongoose").SchemaDefinitionProperty<number, Booking, Document<unknown, {}, Booking, {
         id: string;
     }, import("mongoose").DefaultSchemaOptions> & Omit<Booking & {
         _id: Types.ObjectId;
@@ -67,7 +81,7 @@ export declare const BookingSchema: import("mongoose").Schema<Booking, import("m
     }, "id"> & import("mongoose").HydratedDocumentOverrides<{
         id: string;
     }>> | undefined;
-    serviceDetails?: import("mongoose").SchemaDefinitionProperty<string, Booking, Document<unknown, {}, Booking, {
+    description?: import("mongoose").SchemaDefinitionProperty<string, Booking, Document<unknown, {}, Booking, {
         id: string;
     }, import("mongoose").DefaultSchemaOptions> & Omit<Booking & {
         _id: Types.ObjectId;
@@ -77,6 +91,42 @@ export declare const BookingSchema: import("mongoose").Schema<Booking, import("m
         id: string;
     }>> | undefined;
     status?: import("mongoose").SchemaDefinitionProperty<string, Booking, Document<unknown, {}, Booking, {
+        id: string;
+    }, import("mongoose").DefaultSchemaOptions> & Omit<Booking & {
+        _id: Types.ObjectId;
+    } & {
+        __v: number;
+    }, "id"> & import("mongoose").HydratedDocumentOverrides<{
+        id: string;
+    }>> | undefined;
+    assignedTechnicianId?: import("mongoose").SchemaDefinitionProperty<number, Booking, Document<unknown, {}, Booking, {
+        id: string;
+    }, import("mongoose").DefaultSchemaOptions> & Omit<Booking & {
+        _id: Types.ObjectId;
+    } & {
+        __v: number;
+    }, "id"> & import("mongoose").HydratedDocumentOverrides<{
+        id: string;
+    }>> | undefined;
+    customerNotes?: import("mongoose").SchemaDefinitionProperty<string, Booking, Document<unknown, {}, Booking, {
+        id: string;
+    }, import("mongoose").DefaultSchemaOptions> & Omit<Booking & {
+        _id: Types.ObjectId;
+    } & {
+        __v: number;
+    }, "id"> & import("mongoose").HydratedDocumentOverrides<{
+        id: string;
+    }>> | undefined;
+    internalNotes?: import("mongoose").SchemaDefinitionProperty<string, Booking, Document<unknown, {}, Booking, {
+        id: string;
+    }, import("mongoose").DefaultSchemaOptions> & Omit<Booking & {
+        _id: Types.ObjectId;
+    } & {
+        __v: number;
+    }, "id"> & import("mongoose").HydratedDocumentOverrides<{
+        id: string;
+    }>> | undefined;
+    completedAt?: import("mongoose").SchemaDefinitionProperty<Date, Booking, Document<unknown, {}, Booking, {
         id: string;
     }, import("mongoose").DefaultSchemaOptions> & Omit<Booking & {
         _id: Types.ObjectId;

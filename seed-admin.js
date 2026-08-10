@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 
-const MONGODB_URI = 'mongodb://localhost:27017/goodshowroom';
+const MONGODB_URI = 'mongodb+srv://salman:4lanHyMRdCrtXDJ7@sign365.nglnioh.mongodb.net/bydharmonybackend';
 
 const UserSchema = new mongoose.Schema(
   {

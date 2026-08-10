@@ -11,6 +11,7 @@ import { VehiclesModule } from './vehicles/vehicles.module';
 import { BookingsModule } from './bookings/bookings.module';
 import { JobCardsModule } from './job-cards/job-cards.module';
 import { AnalyticsModule } from './analytics/analytics.module';
+import { RemindersModule } from './reminders/reminders.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { AnalyticsModule } from './analytics/analytics.module';
     BookingsModule,
     JobCardsModule,
     AnalyticsModule,
+    RemindersModule,
   ],
   controllers: [AppController],
   providers: [AppService],
