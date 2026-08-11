@@ -21,6 +21,8 @@ const bookings_module_1 = require("./bookings/bookings.module");
 const job_cards_module_1 = require("./job-cards/job-cards.module");
 const analytics_module_1 = require("./analytics/analytics.module");
 const reminders_module_1 = require("./reminders/reminders.module");
+const api_key_module_1 = require("./api-keys/api-key.module");
+const webhook_event_module_1 = require("./webhook-events/webhook-event.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -44,6 +46,8 @@ exports.AppModule = AppModule = __decorate([
             job_cards_module_1.JobCardsModule,
             analytics_module_1.AnalyticsModule,
             reminders_module_1.RemindersModule,
+            api_key_module_1.ApiKeysModule,
+            webhook_event_module_1.WebhookEventModule,
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService],

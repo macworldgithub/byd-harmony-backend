@@ -12,6 +12,8 @@ import { BookingsModule } from './bookings/bookings.module';
 import { JobCardsModule } from './job-cards/job-cards.module';
 import { AnalyticsModule } from './analytics/analytics.module';
 import { RemindersModule } from './reminders/reminders.module';
+import { ApiKeysModule } from './api-keys/api-key.module';
+import { WebhookEventModule } from './webhook-events/webhook-event.module';
 
 @Module({
   imports: [
@@ -32,6 +34,8 @@ import { RemindersModule } from './reminders/reminders.module';
     JobCardsModule,
     AnalyticsModule,
     RemindersModule,
+    ApiKeysModule,
+    WebhookEventModule,
   ],
   controllers: [AppController],
   providers: [AppService],
