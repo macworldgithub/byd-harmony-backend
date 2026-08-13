@@ -32,7 +32,7 @@ export class JobCardItem {
   partNumber: string;
 
   @Prop({ type: Types.ObjectId, ref: 'User' })
-  technicianId: User;
+  technicianId?: User;
 
   @Prop({ default: Date.now })
   createdAt: Date;
@@ -57,7 +57,7 @@ export class JobCard {
   locationId: Location;
 
   @Prop({ type: Types.ObjectId, ref: 'User' })
-  technicianId: User;
+  technicianId?: User;
 
   @Prop({ enum: ['open', 'in_progress', 'awaiting_parts', 'quality_check', 'completed', 'invoiced', 'closed'], default: 'open' })
   status: string;
