@@ -67,7 +67,7 @@ export class BookingsService {
   }
 
   async remove(id: string): Promise<Booking> {
-    const booking = await this.bookingModel.findByIdAndUpdate(id, { isDeleted: true }, { new: true }).exec();
+    const booking = await this.bookingModel.findByIdAndDelete(id).exec();
     if (!booking) {
       throw new NotFoundException(`Booking #${id} not found`);
     }

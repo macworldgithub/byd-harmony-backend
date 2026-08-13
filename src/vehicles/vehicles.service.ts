@@ -72,7 +72,7 @@ export class VehiclesService {
   }
 
   async remove(id: string): Promise<Vehicle> {
-    const vehicle = await this.vehicleModel.findByIdAndUpdate(id, { isDeleted: true }, { new: true }).exec();
+    const vehicle = await this.vehicleModel.findByIdAndDelete(id).exec();
     if (!vehicle) {
       throw new NotFoundException(`Vehicle #${id} not found`);
     }

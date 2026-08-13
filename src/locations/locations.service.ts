@@ -42,7 +42,7 @@ export class LocationsService {
   }
 
   async remove(id: string): Promise<Location> {
-    const location = await this.locationModel.findByIdAndUpdate(id, { isActive: false }, { new: true }).exec();
+    const location = await this.locationModel.findByIdAndDelete(id).exec();
     if (!location) {
       throw new NotFoundException(`Location #${id} not found`);
     }

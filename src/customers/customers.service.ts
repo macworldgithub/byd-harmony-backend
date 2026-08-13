@@ -79,7 +79,7 @@ export class CustomersService {
   }
 
   async remove(id: string): Promise<Customer> {
-    const customer = await this.customerModel.findByIdAndUpdate(id, { isDeleted: true }, { new: true }).exec();
+    const customer = await this.customerModel.findByIdAndDelete(id).exec();
     if (!customer) {
       throw new NotFoundException(`Customer #${id} not found`);
     }

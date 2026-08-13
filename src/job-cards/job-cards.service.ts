@@ -88,7 +88,7 @@ export class JobCardsService {
   }
 
   async remove(id: string): Promise<JobCard> {
-    const jobCard = await this.jobCardModel.findByIdAndUpdate(id, { isDeleted: true }, { new: true }).exec();
+    const jobCard = await this.jobCardModel.findByIdAndDelete(id).exec();
     if (!jobCard) {
       throw new NotFoundException(`Job Card #${id} not found`);
     }

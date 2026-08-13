@@ -130,7 +130,7 @@ export class ApiKeysService {
    */
   async revoke(id: string): Promise<ApiKeyDocument> {
     const updated = await this.apiKeyModel
-      .findByIdAndUpdate(id, { isActive: false }, { new: true })
+      .findByIdAndDelete(id)
       .select('-keyHash')
       .exec();
 
