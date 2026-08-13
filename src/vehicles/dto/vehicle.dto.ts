@@ -4,7 +4,7 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 export class CreateVehicleDto {
   @ApiProperty()
   @IsNotEmpty()
-  @IsMongoId()
+  @IsString()
   customerId: string;
 
   @ApiPropertyOptional()

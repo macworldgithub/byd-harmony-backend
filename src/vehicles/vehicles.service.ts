@@ -46,7 +46,7 @@ export class VehiclesService {
       ];
     }
 
-    return this.vehicleModel.find(filter, '_id make model year rego vin customerId').limit(10).exec();
+    return this.vehicleModel.find(filter).limit(10).exec();
   }
 
   async findOne(id: string): Promise<Vehicle> {

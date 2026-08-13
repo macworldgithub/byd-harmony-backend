@@ -6,8 +6,8 @@ export type VehicleDocument = Vehicle & Document;
 
 @Schema({ timestamps: true })
 export class Vehicle {
-  @Prop({ type: Types.ObjectId, ref: 'Customer', required: true })
-  customerId: Customer;
+  @Prop({ type: String, ref: 'Customer', required: true })
+  customerId: string | Customer;
 
   @Prop({ maxlength: 17 })
   vin: string;
