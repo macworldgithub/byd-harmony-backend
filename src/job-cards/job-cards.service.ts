@@ -17,7 +17,7 @@ export class JobCardsService {
         num = parseInt(parts[1], 10) + 1;
       }
     }
-    return `BYD-\${num.toString().padStart(5, '0')}`;
+    return `BYD-${num.toString().padStart(5, '0')}`;
   }
 
   async create(createJobCardDto: CreateJobCardDto): Promise<JobCard> {

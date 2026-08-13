@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsOptional, IsString, IsEnum, IsNumber, IsMongoId } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsString, IsEnum, IsNumber, IsMongoId, ValidateIf } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class CreateJobCardDto {
@@ -23,9 +23,9 @@ export class CreateJobCardDto {
   bookingId?: string;
 
   @ApiPropertyOptional()
-  @IsOptional()
+  @ValidateIf(o => o.technicianId != null && String(o.technicianId).trim() !== '')
   @IsMongoId()
-  technicianId?: string;
+  technicianId?: string | null;
 
   @ApiPropertyOptional({ enum: ['low', 'normal', 'high', 'urgent'], default: 'normal' })
   @IsOptional()
@@ -55,9 +55,9 @@ export class CreateJobCardDto {
 
 export class UpdateJobCardDto {
   @ApiPropertyOptional()
-  @IsOptional()
+  @ValidateIf(o => o.technicianId != null && String(o.technicianId).trim() !== '')
   @IsMongoId()
-  technicianId?: string;
+  technicianId?: string | null;
   
   @ApiPropertyOptional()
   @IsOptional()
@@ -112,7 +112,7 @@ export class JobCardItemDto {
   partNumber?: string;
 
   @ApiPropertyOptional()
-  @IsOptional()
+  @ValidateIf(o => o.technicianId != null && String(o.technicianId).trim() !== '')
   @IsMongoId()
-  technicianId?: string;
+  technicianId?: string | null;
 }
