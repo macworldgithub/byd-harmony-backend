@@ -13,12 +13,14 @@ export class CustomersService {
     return createdCustomer.save();
   }
 
-  async findAll(query: any): Promise<any> {
+  async findAll(query: any, locationId?: string): Promise<any> {
     const page = parseInt(query.page) || 1;
     const limit = parseInt(query.limit) || 20;
     const skip = (page - 1) * limit;
 
     const filter: any = { isDeleted: false };
+    
+    if (locationId) filter.preferredLocationId = locationId;
     
     if (query.lifecycleStage) {
       filter.lifecycleStage = query.lifecycleStage;
@@ -41,18 +43,21 @@ export class CustomersService {
     return { data, meta: { total, page, limit } };
   }
 
-  async search(q: string): Promise<any[]> {
+  async search(q: string, locationId?: string): Promise<any[]> {
     if (!q || q.length < 2) return [];
     
-    const filter = {
+    const filter: any = {
       isDeleted: false,
-      $or: [
-        { firstName: { $regex: q, $options: 'i' } },
-        { lastName: { $regex: q, $options: 'i' } },
-        { email: { $regex: q, $options: 'i' } },
-        { phone: { $regex: q, $options: 'i' } },
-      ],
     };
+    
+    if (locationId) filter.preferredLocationId = locationId;
+    
+    filter.$or = [
+      { firstName: { $regex: q, $options: 'i' } },
+      { lastName: { $regex: q, $options: 'i' } },
+      { email: { $regex: q, $options: 'i' } },
+      { phone: { $regex: q, $options: 'i' } },
+    ];
 
     return this.customerModel.find(filter, '_id firstName lastName email phone').limit(10).exec();
   }

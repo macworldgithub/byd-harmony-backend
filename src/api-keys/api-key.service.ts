@@ -52,8 +52,9 @@ export class ApiKeysService {
   /**
    * Retrieves all API keys (omits keyHash).
    */
-  async findAll(): Promise<ApiKeyDocument[]> {
-    return this.apiKeyModel.find().select('-keyHash').exec();
+  async findAll(locationId?: string): Promise<ApiKeyDocument[]> {
+    const filter = locationId ? { locationId } : {};
+    return this.apiKeyModel.find(filter).select('-keyHash').exec();
   }
 
   /**

@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   HttpCode,
+  Query,
 } from '@nestjs/common';
 import { ApiKeysService } from './api-key.service';
 import { CreateApiKeyDto } from './dto/create-api-key.dto';
@@ -28,8 +29,8 @@ export class ApiKeysController {
    * Retrieves all API keys.
    */
   @Get()
-  async findAll() {
-    return this.apiKeysService.findAll();
+  async findAll(@Query('locationId') locationId?: string) {
+    return this.apiKeysService.findAll(locationId);
   }
 
   /**

@@ -19,8 +19,8 @@ export class BookingsController {
 
   @Get()
   @ApiOperation({ summary: 'Get all bookings paginated' })
-  findAll(@Query() query: any) {
-    return this.bookingsService.findAll(query);
+  findAll(@Query() query: any, @Query('locationId') locationId?: string) {
+    return this.bookingsService.findAll(query, locationId);
   }
 
   @Get(':id')

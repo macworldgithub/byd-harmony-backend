@@ -13,14 +13,14 @@ export class BookingsService {
     return createdBooking.save();
   }
 
-  async findAll(query: any): Promise<any> {
+  async findAll(query: any, locationId?: string): Promise<any> {
     const page = parseInt(query.page) || 1;
     const limit = parseInt(query.limit) || 20;
     const skip = (page - 1) * limit;
 
     const filter: any = { isDeleted: false };
     
-    if (query.locationId) filter.locationId = query.locationId;
+    if (locationId) filter.locationId = locationId;
     if (query.status) filter.status = query.status;
     
     if (query.date) {

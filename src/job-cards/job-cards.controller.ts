@@ -19,8 +19,8 @@ export class JobCardsController {
 
   @Get()
   @ApiOperation({ summary: 'Get all job cards paginated' })
-  findAll(@Query() query: any) {
-    return this.jobCardsService.findAll(query);
+  findAll(@Query() query: any, @Query('locationId') locationId?: string) {
+    return this.jobCardsService.findAll(query, locationId);
   }
 
   @Get(':id')
