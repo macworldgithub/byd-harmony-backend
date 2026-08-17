@@ -14,6 +14,7 @@ import { AnalyticsModule } from './analytics/analytics.module';
 import { RemindersModule } from './reminders/reminders.module';
 import { ApiKeysModule } from './api-keys/api-key.module';
 import { WebhookEventModule } from './webhook-events/webhook-event.module';
+import { ScheduleDeliveriesModule } from './schedule-deliveries/schedule-deliveries.module';
 
 @Module({
   imports: [
@@ -36,6 +37,7 @@ import { WebhookEventModule } from './webhook-events/webhook-event.module';
     RemindersModule,
     ApiKeysModule,
     WebhookEventModule,
+    ScheduleDeliveriesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
