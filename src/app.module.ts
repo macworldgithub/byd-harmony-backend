@@ -15,6 +15,7 @@ import { RemindersModule } from './reminders/reminders.module';
 import { ApiKeysModule } from './api-keys/api-key.module';
 import { WebhookEventModule } from './webhook-events/webhook-event.module';
 import { ScheduleDeliveriesModule } from './schedule-deliveries/schedule-deliveries.module';
+import { ContractorsModule } from './contractors/contractors.module';
 
 @Module({
   imports: [
@@ -38,6 +39,7 @@ import { ScheduleDeliveriesModule } from './schedule-deliveries/schedule-deliver
     ApiKeysModule,
     WebhookEventModule,
     ScheduleDeliveriesModule,
+    ContractorsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
