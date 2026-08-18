@@ -6,7 +6,9 @@ import { CreateCustomerDto, UpdateCustomerDto } from './dto/customer.dto';
 
 @Injectable()
 export class CustomersService {
-  constructor(@InjectModel(Customer.name) private customerModel: Model<CustomerDocument>) {}
+  constructor(
+    @InjectModel(Customer.name) private customerModel: Model<CustomerDocument>,
+  ) {}
 
   async create(createCustomerDto: CreateCustomerDto): Promise<Customer> {
     const createdCustomer = new this.customerModel(createCustomerDto);
@@ -19,13 +21,13 @@ export class CustomersService {
     const skip = (page - 1) * limit;
 
     const filter: any = { isDeleted: false };
-    
-    if (locationId) filter.preferredLocationId = new (require('mongoose').Types.ObjectId)(locationId);
-    
+
+    if (locationId) filter.preferredLocationId = locationId;
+
     if (query.lifecycleStage) {
       filter.lifecycleStage = query.lifecycleStage;
     }
-    
+
     if (query.search) {
       filter.$or = [
         { firstName: { $regex: query.search, $options: 'i' } },
@@ -45,13 +47,13 @@ export class CustomersService {
 
   async search(q: string, locationId?: string): Promise<any[]> {
     if (!q || q.length < 2) return [];
-    
+
     const filter: any = {
       isDeleted: false,
     };
-    
+
     if (locationId) filter.preferredLocationId = locationId;
-    
+
     filter.$or = [
       { firstName: { $regex: q, $options: 'i' } },
       { lastName: { $regex: q, $options: 'i' } },
@@ -59,25 +61,41 @@ export class CustomersService {
       { phone: { $regex: q, $options: 'i' } },
     ];
 
-    return this.customerModel.find(filter, '_id firstName lastName email phone').limit(10).exec();
+    return this.customerModel
+      .find(filter, '_id firstName lastName email phone')
+      .limit(10)
+      .exec();
   }
 
   async findOne(id: string, locationId?: string): Promise<Customer> {
-    const customer = await this.customerModel.findById(id).populate('preferredLocationId', 'name').exec();
+    const customer = await this.customerModel
+      .findById(id)
+      .populate('preferredLocationId', 'name')
+      .exec();
     if (!customer) {
       throw new NotFoundException(`Customer #${id} not found`);
     }
     if (locationId) {
-      const preferredLocationId = (customer.preferredLocationId as any)?._id ? String((customer.preferredLocationId as any)._id) : String(customer.preferredLocationId ?? '');
-      if (!customer.preferredLocationId || preferredLocationId !== String(locationId)) {
+      const preferredLocationId = (customer.preferredLocationId as any)?._id
+        ? String((customer.preferredLocationId as any)._id)
+        : String(customer.preferredLocationId ?? '');
+      if (
+        !customer.preferredLocationId ||
+        preferredLocationId !== String(locationId)
+      ) {
         throw new NotFoundException(`Customer #${id} not found`);
       }
     }
     return customer;
   }
 
-  async update(id: string, updateCustomerDto: UpdateCustomerDto): Promise<Customer> {
-    const existingCustomer = await this.customerModel.findByIdAndUpdate(id, updateCustomerDto, { new: true }).exec();
+  async update(
+    id: string,
+    updateCustomerDto: UpdateCustomerDto,
+  ): Promise<Customer> {
+    const existingCustomer = await this.customerModel
+      .findByIdAndUpdate(id, updateCustomerDto, { new: true })
+      .exec();
     if (!existingCustomer) {
       throw new NotFoundException(`Customer #${id} not found`);
     }

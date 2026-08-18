@@ -6,7 +6,9 @@ import { CreateBookingDto, UpdateBookingDto } from './dto/booking.dto';
 
 @Injectable()
 export class BookingsService {
-  constructor(@InjectModel(Booking.name) private bookingModel: Model<BookingDocument>) {}
+  constructor(
+    @InjectModel(Booking.name) private bookingModel: Model<BookingDocument>,
+  ) {}
 
   async create(createBookingDto: CreateBookingDto): Promise<Booking> {
     const createdBooking = new this.bookingModel(createBookingDto);
@@ -19,10 +21,10 @@ export class BookingsService {
     const skip = (page - 1) * limit;
 
     const filter: any = { isDeleted: false };
-    
-    if (locationId) filter.locationId = new (require('mongoose').Types.ObjectId)(locationId);
+
+    if (locationId) filter.locationId = locationId;
     if (query.status) filter.status = query.status;
-    
+
     if (query.date) {
       const startDate = new Date(query.date);
       startDate.setHours(0, 0, 0, 0);
@@ -32,7 +34,8 @@ export class BookingsService {
     }
 
     const [data, total] = await Promise.all([
-      this.bookingModel.find(filter)
+      this.bookingModel
+        .find(filter)
         .populate('customerId', 'firstName lastName phone email')
         .populate('vehicleId', 'make model year rego vin')
         .populate('locationId', 'name')
@@ -46,23 +49,33 @@ export class BookingsService {
   }
 
   async findOne(id: string, locationId?: string): Promise<Booking> {
-    const booking = await this.bookingModel.findById(id)
+    const booking = await this.bookingModel
+      .findById(id)
       .populate('customerId')
       .populate('vehicleId')
       .populate('locationId')
       .exec();
-      
+
     if (!booking) {
       throw new NotFoundException(`Booking #${id} not found`);
     }
-    if (locationId && String((booking.locationId as any)?._id || booking.locationId) !== String(locationId)) {
+    if (
+      locationId &&
+      String((booking.locationId as any)?._id || booking.locationId) !==
+        String(locationId)
+    ) {
       throw new NotFoundException(`Booking #${id} not found`);
     }
     return booking;
   }
 
-  async update(id: string, updateBookingDto: UpdateBookingDto): Promise<Booking> {
-    const existingBooking = await this.bookingModel.findByIdAndUpdate(id, updateBookingDto, { new: true }).exec();
+  async update(
+    id: string,
+    updateBookingDto: UpdateBookingDto,
+  ): Promise<Booking> {
+    const existingBooking = await this.bookingModel
+      .findByIdAndUpdate(id, updateBookingDto, { new: true })
+      .exec();
     if (!existingBooking) {
       throw new NotFoundException(`Booking #${id} not found`);
     }

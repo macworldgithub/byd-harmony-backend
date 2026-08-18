@@ -2,14 +2,23 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { JobCard, JobCardDocument } from './schemas/job-card.schema';
-import { CreateJobCardDto, UpdateJobCardDto, JobCardItemDto } from './dto/job-card.dto';
+import {
+  CreateJobCardDto,
+  UpdateJobCardDto,
+  JobCardItemDto,
+} from './dto/job-card.dto';
 
 @Injectable()
 export class JobCardsService {
-  constructor(@InjectModel(JobCard.name) private jobCardModel: Model<JobCardDocument>) {}
+  constructor(
+    @InjectModel(JobCard.name) private jobCardModel: Model<JobCardDocument>,
+  ) {}
 
   private async generateOrderNumber(): Promise<string> {
-    const lastJob = await this.jobCardModel.findOne({}, 'orderNumber').sort({ createdAt: -1 }).exec();
+    const lastJob = await this.jobCardModel
+      .findOne({}, 'orderNumber')
+      .sort({ createdAt: -1 })
+      .exec();
     let num = 1;
     if (lastJob && lastJob.orderNumber) {
       const parts = lastJob.orderNumber.split('-');
@@ -35,13 +44,14 @@ export class JobCardsService {
     const skip = (page - 1) * limit;
 
     const filter: any = { isDeleted: false };
-    
-    if (locationId) filter.locationId = new (require('mongoose').Types.ObjectId)(locationId);
+
+    if (locationId) filter.locationId = locationId;
     if (query.status) filter.status = query.status;
     if (query.priority) filter.priority = query.priority;
 
     const [data, total] = await Promise.all([
-      this.jobCardModel.find(filter)
+      this.jobCardModel
+        .find(filter)
         .populate('customerId', 'firstName lastName phone')
         .populate('vehicleId', 'make model rego vin')
         .populate('locationId', 'name')
@@ -55,23 +65,31 @@ export class JobCardsService {
   }
 
   async findOne(id: string, locationId?: string): Promise<JobCard> {
-    const jobCard = await this.jobCardModel.findById(id)
+    const jobCard = await this.jobCardModel
+      .findById(id)
       .populate('customerId')
       .populate('vehicleId')
       .populate('locationId')
       .populate('technicianId', 'name')
       .exec();
-      
+
     if (!jobCard) {
       throw new NotFoundException(`Job Card #${id} not found`);
     }
-    if (locationId && String((jobCard.locationId as any)?._id || jobCard.locationId) !== String(locationId)) {
+    if (
+      locationId &&
+      String((jobCard.locationId as any)?._id || jobCard.locationId) !==
+        String(locationId)
+    ) {
       throw new NotFoundException(`Job Card #${id} not found`);
     }
     return jobCard;
   }
 
-  async update(id: string, updateJobCardDto: UpdateJobCardDto): Promise<JobCard> {
+  async update(
+    id: string,
+    updateJobCardDto: UpdateJobCardDto,
+  ): Promise<JobCard> {
     const current = await this.jobCardModel.findById(id).exec();
     if (!current) throw new NotFoundException(`Job Card #${id} not found`);
 
@@ -86,7 +104,9 @@ export class JobCardsService {
       }
     }
 
-    const updatedJobCard = await this.jobCardModel.findByIdAndUpdate(id, updateData, { new: true }).exec();
+    const updatedJobCard = await this.jobCardModel
+      .findByIdAndUpdate(id, updateData, { new: true })
+      .exec();
     return updatedJobCard as JobCard;
   }
 
@@ -113,7 +133,7 @@ export class JobCardsService {
 
     jobCard.items.push(newItem);
     this.recalculateTotals(jobCard);
-    
+
     return jobCard.save();
   }
 
@@ -130,7 +150,7 @@ export class JobCardsService {
     if (itemDto.partNumber) item.partNumber = itemDto.partNumber;
 
     item.totalCost = item.quantity * item.unitCost;
-    
+
     this.recalculateTotals(jobCard);
     return jobCard.save();
   }
@@ -139,7 +159,9 @@ export class JobCardsService {
     const jobCard = await this.jobCardModel.findById(id).exec();
     if (!jobCard) throw new NotFoundException(`Job Card #${id} not found`);
 
-    jobCard.items = jobCard.items.filter((i: any) => i._id.toString() !== itemId);
+    jobCard.items = jobCard.items.filter(
+      (i: any) => i._id.toString() !== itemId,
+    );
     this.recalculateTotals(jobCard);
     return jobCard.save();
   }
@@ -151,7 +173,11 @@ export class JobCardsService {
     for (const item of jobCard.items) {
       if (item.type === 'labour') {
         labourTotal += item.totalCost;
-      } else if (item.type === 'parts' || item.type === 'sublet' || item.type === 'sundry') {
+      } else if (
+        item.type === 'parts' ||
+        item.type === 'sublet' ||
+        item.type === 'sundry'
+      ) {
         partsTotal += item.totalCost;
       }
     }

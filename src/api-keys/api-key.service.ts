@@ -35,7 +35,7 @@ export class ApiKeysService {
       keyPrefix,
     });
     const saved = await newApiKey.save();
-    
+
     // Fire webhook event if webhookUrl is present
     if (saved.webhookUrl) {
       await this.webhookEventService.create(
@@ -53,7 +53,7 @@ export class ApiKeysService {
    * Retrieves all API keys (omits keyHash).
    */
   async findAll(locationId?: string): Promise<ApiKeyDocument[]> {
-    const filter = locationId ? { locationId: new (require('mongoose').Types.ObjectId)(locationId) } : {};
+    const filter = locationId ? { locationId: locationId } : {};
     return this.apiKeyModel.find(filter).select('-keyHash').exec();
   }
 
@@ -90,11 +90,7 @@ export class ApiKeysService {
   async rotate(id: string) {
     const { plaintextKey, keyHash, keyPrefix } = this.generateKey();
     const updated = await this.apiKeyModel
-      .findByIdAndUpdate(
-        id,
-        { keyHash, keyPrefix },
-        { new: true },
-      )
+      .findByIdAndUpdate(id, { keyHash, keyPrefix }, { new: true })
       .exec();
 
     if (!updated) {
