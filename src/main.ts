@@ -1,6 +1,6 @@
-// import * as dns from 'dns';
-// dns.setDefaultResultOrder('ipv4first');
-// dns.setServers(['8.8.8.8', '8.8.4.4']); 
+import * as dns from 'dns';
+dns.setDefaultResultOrder('ipv4first');
+dns.setServers(['8.8.8.8', '8.8.4.4']); 
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';

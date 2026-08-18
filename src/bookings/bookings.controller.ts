@@ -2,6 +2,8 @@ import { Controller, Get, Post, Body, Put, Param, Delete, Query, UseGuards } fro
 import { BookingsService } from './bookings.service';
 import { CreateBookingDto, UpdateBookingDto } from './dto/booking.dto';
 import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
+import { CurrentUser } from '../common/decorators/current-user.decorator';
+import { getEffectiveLocationId } from '../common/utils/location-access';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 
 @ApiTags('bookings')
@@ -19,14 +21,14 @@ export class BookingsController {
 
   @Get()
   @ApiOperation({ summary: 'Get all bookings paginated' })
-  findAll(@Query() query: any, @Query('locationId') locationId?: string) {
-    return this.bookingsService.findAll(query, locationId);
+  findAll(@Query() query: any, @Query('locationId') locationId?: string, @CurrentUser() user?: any) {
+    return this.bookingsService.findAll(query, getEffectiveLocationId(user, locationId));
   }
 
   @Get(':id')
   @ApiOperation({ summary: 'Get a booking by id' })
-  findOne(@Param('id') id: string) {
-    return this.bookingsService.findOne(id);
+  findOne(@Param('id') id: string, @CurrentUser() user?: any) {
+    return this.bookingsService.findOne(id, getEffectiveLocationId(user));
   }
 
   @Put(':id')

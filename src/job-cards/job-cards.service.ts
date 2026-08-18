@@ -36,7 +36,7 @@ export class JobCardsService {
 
     const filter: any = { isDeleted: false };
     
-    if (locationId) filter.locationId = locationId;
+    if (locationId) filter.locationId = new (require('mongoose').Types.ObjectId)(locationId);
     if (query.status) filter.status = query.status;
     if (query.priority) filter.priority = query.priority;
 
@@ -54,7 +54,7 @@ export class JobCardsService {
     return { data, meta: { total, page, limit } };
   }
 
-  async findOne(id: string): Promise<JobCard> {
+  async findOne(id: string, locationId?: string): Promise<JobCard> {
     const jobCard = await this.jobCardModel.findById(id)
       .populate('customerId')
       .populate('vehicleId')
@@ -63,6 +63,9 @@ export class JobCardsService {
       .exec();
       
     if (!jobCard) {
+      throw new NotFoundException(`Job Card #${id} not found`);
+    }
+    if (locationId && String((jobCard.locationId as any)?._id || jobCard.locationId) !== String(locationId)) {
       throw new NotFoundException(`Job Card #${id} not found`);
     }
     return jobCard;

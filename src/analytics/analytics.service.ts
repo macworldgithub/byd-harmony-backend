@@ -17,11 +17,27 @@ export class AnalyticsService {
     @InjectModel(Location.name) private locationModel: Model<LocationDocument>,
   ) {}
 
-  async getDashboard(): Promise<any> {
+  async getDashboard(locationId?: string): Promise<any> {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     const tomorrow = new Date(today);
     tomorrow.setDate(tomorrow.getDate() + 1);
+
+    const customerFilter: any = { isDeleted: false };
+    if (locationId) customerFilter.preferredLocationId = locationId;
+
+    const vehicleFilter: any = { isDeleted: false, status: 'active' };
+    if (locationId) {
+      const customerIds = await this.customerModel.find(customerFilter).distinct('_id');
+      vehicleFilter.customerId = { $in: customerIds.length ? customerIds : [] };
+    }
+
+    const jobFilter: any = { isDeleted: false };
+    const bookingFilter: any = { isDeleted: false };
+    if (locationId) {
+      jobFilter.locationId = locationId;
+      bookingFilter.locationId = locationId;
+    }
 
     const [
       totalCustomers,
@@ -33,14 +49,14 @@ export class AnalyticsService {
       jobCardsStats,
       recentActivityData
     ] = await Promise.all([
-      this.customerModel.countDocuments({ isDeleted: false }),
-      this.vehicleModel.countDocuments({ isDeleted: false, status: 'active' }),
-      this.jobCardModel.countDocuments({ isDeleted: false, status: { $in: ['open', 'in_progress'] } }),
-      this.locationModel.countDocuments({ isActive: true }),
-      this.bookingModel.countDocuments({ isDeleted: false, serviceDateTime: { $gte: today, $lt: tomorrow } }),
-      this.bookingModel.countDocuments({ isDeleted: false, status: 'pending' }),
+      this.customerModel.countDocuments(customerFilter),
+      this.vehicleModel.countDocuments(vehicleFilter),
+      this.jobCardModel.countDocuments({ ...jobFilter, status: { $in: ['open', 'in_progress'] } }),
+      this.locationModel.countDocuments({ isActive: true, ...(locationId ? { _id: locationId } : {}) }),
+      this.bookingModel.countDocuments({ ...bookingFilter, scheduledAt: { $gte: today, $lt: tomorrow } }),
+      this.bookingModel.countDocuments({ ...bookingFilter, status: 'pending' }),
       this.jobCardModel.aggregate([
-        { $match: { isDeleted: false } },
+        { $match: jobFilter },
         { 
           $group: { 
             _id: null, 
@@ -49,7 +65,7 @@ export class AnalyticsService {
           }
         }
       ]),
-      this.jobCardModel.find({ isDeleted: false })
+      this.jobCardModel.find(jobFilter)
         .sort({ updatedAt: -1 })
         .limit(10)
         .populate('customerId', 'firstName lastName')

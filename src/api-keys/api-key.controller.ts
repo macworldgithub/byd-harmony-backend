@@ -8,11 +8,16 @@ import {
   Delete,
   HttpCode,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { ApiKeysService } from './api-key.service';
 import { CreateApiKeyDto } from './dto/create-api-key.dto';
 import { UpdateApiKeyDto } from './dto/update-api-key.dto';
+import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
+import { CurrentUser } from '../common/decorators/current-user.decorator';
+import { getEffectiveLocationId } from '../common/utils/location-access';
 
+@UseGuards(JwtAuthGuard)
 @Controller('api-keys')
 export class ApiKeysController {
   constructor(private readonly apiKeysService: ApiKeysService) {}
@@ -29,16 +34,16 @@ export class ApiKeysController {
    * Retrieves all API keys.
    */
   @Get()
-  async findAll(@Query('locationId') locationId?: string) {
-    return this.apiKeysService.findAll(locationId);
+  async findAll(@Query('locationId') locationId?: string, @CurrentUser() user?: any) {
+    return this.apiKeysService.findAll(getEffectiveLocationId(user, locationId));
   }
 
   /**
    * Retrieves a specific API key by ID.
    */
   @Get(':id')
-  async findById(@Param('id') id: string) {
-    return this.apiKeysService.findById(id);
+  async findById(@Param('id') id: string, @CurrentUser() user?: any) {
+    return this.apiKeysService.findById(id, getEffectiveLocationId(user));
   }
 
   /**

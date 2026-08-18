@@ -9,6 +9,9 @@ export class Vehicle {
   @Prop({ type: String, ref: 'Customer', required: true })
   customerId: string | Customer;
 
+  @Prop({ type: Types.ObjectId, ref: 'Location' })
+  _locationId: Types.ObjectId;
+
   @Prop({ maxlength: 17 })
   vin: string;
 

@@ -2,6 +2,8 @@ import { Controller, Get, Post, Body, Put, Param, Delete, Query, UseGuards } fro
 import { JobCardsService } from './job-cards.service';
 import { CreateJobCardDto, UpdateJobCardDto, JobCardItemDto } from './dto/job-card.dto';
 import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
+import { CurrentUser } from '../common/decorators/current-user.decorator';
+import { getEffectiveLocationId } from '../common/utils/location-access';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 
 @ApiTags('job-cards')
@@ -19,14 +21,14 @@ export class JobCardsController {
 
   @Get()
   @ApiOperation({ summary: 'Get all job cards paginated' })
-  findAll(@Query() query: any, @Query('locationId') locationId?: string) {
-    return this.jobCardsService.findAll(query, locationId);
+  findAll(@Query() query: any, @Query('locationId') locationId?: string, @CurrentUser() user?: any) {
+    return this.jobCardsService.findAll(query, getEffectiveLocationId(user, locationId));
   }
 
   @Get(':id')
   @ApiOperation({ summary: 'Get a job card by id' })
-  findOne(@Param('id') id: string) {
-    return this.jobCardsService.findOne(id);
+  findOne(@Param('id') id: string, @CurrentUser() user?: any) {
+    return this.jobCardsService.findOne(id, getEffectiveLocationId(user));
   }
 
   @Put(':id')

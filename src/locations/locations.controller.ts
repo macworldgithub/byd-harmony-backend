@@ -2,6 +2,8 @@ import { Controller, Get, Post, Body, Put, Param, Delete, Query, UseGuards } fro
 import { LocationsService } from './locations.service';
 import { CreateLocationDto, UpdateLocationDto } from './dto/location.dto';
 import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
+import { CurrentUser } from '../common/decorators/current-user.decorator';
+import { getEffectiveLocationId } from '../common/utils/location-access';
 import { ApiTags, ApiOperation, ApiBearerAuth, ApiQuery } from '@nestjs/swagger';
 
 @ApiTags('locations')
@@ -19,22 +21,22 @@ export class LocationsController {
 
   @Get('dropdown')
   @ApiOperation({ summary: 'Get lightweight list of active locations' })
-  getDropdown() {
-    return this.locationsService.getDropdown();
+  getDropdown(@CurrentUser() user?: any) {
+    return this.locationsService.getDropdown(getEffectiveLocationId(user));
   }
 
   @Get()
   @ApiOperation({ summary: 'Get all locations' })
   @ApiQuery({ name: 'isActive', required: false })
   @ApiQuery({ name: 'type', required: false })
-  findAll(@Query() query: any) {
-    return this.locationsService.findAll(query);
+  findAll(@Query() query: any, @CurrentUser() user?: any) {
+    return this.locationsService.findAll(query, getEffectiveLocationId(user));
   }
 
   @Get(':id')
   @ApiOperation({ summary: 'Get a location by id' })
-  findOne(@Param('id') id: string) {
-    return this.locationsService.findOne(id);
+  findOne(@Param('id') id: string, @CurrentUser() user?: any) {
+    return this.locationsService.findOne(id, getEffectiveLocationId(user));
   }
 
   @Put(':id')

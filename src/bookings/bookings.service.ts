@@ -20,7 +20,7 @@ export class BookingsService {
 
     const filter: any = { isDeleted: false };
     
-    if (locationId) filter.locationId = locationId;
+    if (locationId) filter.locationId = new (require('mongoose').Types.ObjectId)(locationId);
     if (query.status) filter.status = query.status;
     
     if (query.date) {
@@ -45,7 +45,7 @@ export class BookingsService {
     return { data, meta: { total, page, limit } };
   }
 
-  async findOne(id: string): Promise<Booking> {
+  async findOne(id: string, locationId?: string): Promise<Booking> {
     const booking = await this.bookingModel.findById(id)
       .populate('customerId')
       .populate('vehicleId')
@@ -53,6 +53,9 @@ export class BookingsService {
       .exec();
       
     if (!booking) {
+      throw new NotFoundException(`Booking #${id} not found`);
+    }
+    if (locationId && String((booking.locationId as any)?._id || booking.locationId) !== String(locationId)) {
       throw new NotFoundException(`Booking #${id} not found`);
     }
     return booking;

@@ -17,13 +17,16 @@ export class ScheduleDeliveriesService {
   }
 
   async findAll(locationId?: string): Promise<ScheduleDelivery[]> {
-    const filter = locationId ? { locationId } : {};
+    const filter = locationId ? { locationId: new (require('mongoose').Types.ObjectId)(locationId) } : {};
     return this.scheduleDeliveryModel.find(filter).exec();
   }
 
-  async findOne(id: string): Promise<ScheduleDelivery> {
+  async findOne(id: string, locationId?: string): Promise<ScheduleDelivery> {
     const delivery = await this.scheduleDeliveryModel.findById(id).exec();
     if (!delivery) {
+      throw new NotFoundException(`ScheduleDelivery #${id} not found`);
+    }
+    if (locationId && String((delivery as any).locationId) !== String(locationId)) {
       throw new NotFoundException(`ScheduleDelivery #${id} not found`);
     }
     return delivery;

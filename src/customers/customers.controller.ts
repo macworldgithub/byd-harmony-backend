@@ -2,6 +2,8 @@ import { Controller, Get, Post, Body, Put, Param, Delete, Query, UseGuards } fro
 import { CustomersService } from './customers.service';
 import { CreateCustomerDto, UpdateCustomerDto } from './dto/customer.dto';
 import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
+import { CurrentUser } from '../common/decorators/current-user.decorator';
+import { getEffectiveLocationId } from '../common/utils/location-access';
 import { ApiTags, ApiOperation, ApiBearerAuth, ApiQuery } from '@nestjs/swagger';
 
 @ApiTags('customers')
@@ -20,20 +22,20 @@ export class CustomersController {
   @Get('search')
   @ApiOperation({ summary: 'Search customers for dropdowns' })
   @ApiQuery({ name: 'q', required: true })
-  search(@Query('q') q: string, @Query('locationId') locationId?: string) {
-    return this.customersService.search(q, locationId);
+  search(@Query('q') q: string, @Query('locationId') locationId?: string, @CurrentUser() user?: any) {
+    return this.customersService.search(q, getEffectiveLocationId(user, locationId));
   }
 
   @Get()
   @ApiOperation({ summary: 'Get all customers paginated' })
-  findAll(@Query() query: any, @Query('locationId') locationId?: string) {
-    return this.customersService.findAll(query, locationId);
+  findAll(@Query() query: any, @Query('locationId') locationId?: string, @CurrentUser() user?: any) {
+    return this.customersService.findAll(query, getEffectiveLocationId(user, locationId));
   }
 
   @Get(':id')
   @ApiOperation({ summary: 'Get a customer by id' })
-  findOne(@Param('id') id: string) {
-    return this.customersService.findOne(id);
+  findOne(@Param('id') id: string, @CurrentUser() user?: any) {
+    return this.customersService.findOne(id, getEffectiveLocationId(user));
   }
 
   @Put(':id')

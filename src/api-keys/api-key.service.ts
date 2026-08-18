@@ -53,16 +53,19 @@ export class ApiKeysService {
    * Retrieves all API keys (omits keyHash).
    */
   async findAll(locationId?: string): Promise<ApiKeyDocument[]> {
-    const filter = locationId ? { locationId } : {};
+    const filter = locationId ? { locationId: new (require('mongoose').Types.ObjectId)(locationId) } : {};
     return this.apiKeyModel.find(filter).select('-keyHash').exec();
   }
 
   /**
    * Finds an API key by its ID.
    */
-  async findById(id: string): Promise<ApiKeyDocument> {
+  async findById(id: string, locationId?: string): Promise<ApiKeyDocument> {
     const key = await this.apiKeyModel.findById(id).select('-keyHash').exec();
     if (!key) {
+      throw new NotFoundException(`ApiKey with ID ${id} not found`);
+    }
+    if (locationId && String((key as any).locationId) !== String(locationId)) {
       throw new NotFoundException(`ApiKey with ID ${id} not found`);
     }
     return key;

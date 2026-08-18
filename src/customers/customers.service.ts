@@ -20,7 +20,7 @@ export class CustomersService {
 
     const filter: any = { isDeleted: false };
     
-    if (locationId) filter.preferredLocationId = locationId;
+    if (locationId) filter.preferredLocationId = new (require('mongoose').Types.ObjectId)(locationId);
     
     if (query.lifecycleStage) {
       filter.lifecycleStage = query.lifecycleStage;
@@ -62,10 +62,16 @@ export class CustomersService {
     return this.customerModel.find(filter, '_id firstName lastName email phone').limit(10).exec();
   }
 
-  async findOne(id: string): Promise<Customer> {
+  async findOne(id: string, locationId?: string): Promise<Customer> {
     const customer = await this.customerModel.findById(id).populate('preferredLocationId', 'name').exec();
     if (!customer) {
       throw new NotFoundException(`Customer #${id} not found`);
+    }
+    if (locationId) {
+      const preferredLocationId = (customer.preferredLocationId as any)?._id ? String((customer.preferredLocationId as any)._id) : String(customer.preferredLocationId ?? '');
+      if (!customer.preferredLocationId || preferredLocationId !== String(locationId)) {
+        throw new NotFoundException(`Customer #${id} not found`);
+      }
     }
     return customer;
   }

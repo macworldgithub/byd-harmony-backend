@@ -2,6 +2,8 @@ import { Controller, Get, Post, Body, Put, Param, Delete, Query, UseGuards } fro
 import { VehiclesService } from './vehicles.service';
 import { CreateVehicleDto, UpdateVehicleDto } from './dto/vehicle.dto';
 import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
+import { CurrentUser } from '../common/decorators/current-user.decorator';
+import { getEffectiveLocationId } from '../common/utils/location-access';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 
 @ApiTags('vehicles')
@@ -19,20 +21,20 @@ export class VehiclesController {
 
   @Get('search')
   @ApiOperation({ summary: 'Search vehicles' })
-  search(@Query() query: any) {
-    return this.vehiclesService.search(query);
+  search(@Query() query: any, @CurrentUser() user?: any) {
+    return this.vehiclesService.search(query, getEffectiveLocationId(user));
   }
 
   @Get()
   @ApiOperation({ summary: 'Get all vehicles paginated' })
-  findAll(@Query() query: any) {
-    return this.vehiclesService.findAll(query);
+  findAll(@Query() query: any, @CurrentUser() user?: any) {
+    return this.vehiclesService.findAll(query, getEffectiveLocationId(user));
   }
 
   @Get(':id')
   @ApiOperation({ summary: 'Get a vehicle by id' })
-  findOne(@Param('id') id: string) {
-    return this.vehiclesService.findOne(id);
+  findOne(@Param('id') id: string, @CurrentUser() user?: any) {
+    return this.vehiclesService.findOne(id, getEffectiveLocationId(user));
   }
 
   @Put(':id')

@@ -13,21 +13,27 @@ export class LocationsService {
     return createdLocation.save();
   }
 
-  async findAll(query: any): Promise<Location[]> {
+  async findAll(query: any, locationId?: string): Promise<Location[]> {
     const filter: any = { isActive: { $ne: false } };
+    if (locationId) filter._id = new (require('mongoose').Types.ObjectId)(locationId);
     if (query.isActive !== undefined) filter.isActive = query.isActive === 'true';
     if (query.type) filter.type = query.type;
 
     return this.locationModel.find(filter).exec();
   }
 
-  async getDropdown(): Promise<any[]> {
-    return this.locationModel.find({ isActive: true }, '_id name type').exec();
+  async getDropdown(locationId?: string): Promise<any[]> {
+    const filter: any = { isActive: true };
+    if (locationId) filter._id = new (require('mongoose').Types.ObjectId)(locationId);
+    return this.locationModel.find(filter, '_id name type').exec();
   }
 
-  async findOne(id: string): Promise<Location> {
+  async findOne(id: string, locationId?: string): Promise<Location> {
     const location = await this.locationModel.findById(id).exec();
     if (!location) {
+      throw new NotFoundException(`Location #${id} not found`);
+    }
+    if (locationId && String(location._id) !== String(locationId)) {
       throw new NotFoundException(`Location #${id} not found`);
     }
     return location;
