@@ -17,6 +17,8 @@ import { WebhookEventModule } from './webhook-events/webhook-event.module';
 import { ScheduleDeliveriesModule } from './schedule-deliveries/schedule-deliveries.module';
 import { ContractorsModule } from './contractors/contractors.module';
 import { TemplatesModule } from './templates/templates.module';
+import { BulkCampaignsModule } from './bulk-campaigns/bulk-campaigns.module';
+
 
 @Module({
   imports: [
@@ -42,6 +44,7 @@ import { TemplatesModule } from './templates/templates.module';
     ScheduleDeliveriesModule,
     ContractorsModule,
     TemplatesModule,
+    BulkCampaignsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
