@@ -1,7 +1,6 @@
 import { Controller, Get, Post, Body, Param, UseGuards } from '@nestjs/common';
 import { BulkCampaignsService } from './bulk-campaigns.service';
 import { CreateBulkCampaignDto } from './dto/create-bulk-campaign.dto';
-import { SendBulkCampaignDto } from './dto/send-bulk-campaign.dto';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
 // import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard'; // Assuming JWT auth is used, uncomment if needed
 
@@ -39,7 +38,7 @@ export class BulkCampaignsController {
   @ApiResponse({ status: 200, description: 'Campaign sending initiated successfully.' })
   @ApiResponse({ status: 400, description: 'Invalid request or campaign is not in draft status.' })
   @ApiResponse({ status: 404, description: 'Campaign not found.' })
-  sendCampaign(@Param('id') id: string, @Body() sendBulkCampaignDto: SendBulkCampaignDto) {
-    return this.bulkCampaignsService.sendCampaign(id, sendBulkCampaignDto);
+  sendCampaign(@Param('id') id: string) {
+    return this.bulkCampaignsService.sendCampaign(id);
   }
 }

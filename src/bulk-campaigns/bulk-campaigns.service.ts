@@ -3,8 +3,8 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { BulkCampaign, BulkCampaignDocument } from './schemas/bulk-campaign.schema';
 import { BulkRecipient, BulkRecipientDocument } from './schemas/bulk-recipient.schema';
+import { Customer, CustomerDocument } from '../customers/schemas/customer.schema';
 import { CreateBulkCampaignDto } from './dto/create-bulk-campaign.dto';
-import { SendBulkCampaignDto } from './dto/send-bulk-campaign.dto';
 
 @Injectable()
 export class BulkCampaignsService {
@@ -13,6 +13,7 @@ export class BulkCampaignsService {
   constructor(
     @InjectModel(BulkCampaign.name) private bulkCampaignModel: Model<BulkCampaignDocument>,
     @InjectModel(BulkRecipient.name) private bulkRecipientModel: Model<BulkRecipientDocument>,
+    @InjectModel(Customer.name) private customerModel: Model<CustomerDocument>,
   ) {}
 
   async create(createBulkCampaignDto: CreateBulkCampaignDto): Promise<BulkCampaignDocument> {
@@ -38,30 +39,51 @@ export class BulkCampaignsService {
     return campaign;
   }
 
-  async sendCampaign(id: string, sendDto: SendBulkCampaignDto): Promise<any> {
+  async sendCampaign(id: string): Promise<any> {
     const campaign = await this.findOne(id);
 
     if (campaign.status !== 'draft') {
       throw new BadRequestException(`Campaign status is ${campaign.status}, only draft campaigns can be sent.`);
     }
 
-    const { recipients } = sendDto;
+    // Determine query based on segment
+    let customerQuery: any = { consentSms: true, isDeleted: false };
+    
+    switch (campaign.segment) {
+      case 'all_live_clients':
+        customerQuery.lifecycleStage = 'active'; // Adjust as per your exact logic
+        break;
+      case 'buying_journey':
+        customerQuery.lifecycleStage = 'prospect'; // Adjust as per your exact logic
+        break;
+      case 'trading_upgrading':
+        customerQuery.lifecycleStage = 'active'; // Replace with appropriate filter
+        break;
+      case 'service_maintenance':
+        customerQuery.lifecycleStage = 'service';
+        break;
+      default:
+        throw new BadRequestException(`Unknown segment: ${campaign.segment}`);
+    }
+
+    // Fetch matching customers
+    const recipients = await this.customerModel.find(customerQuery).exec();
 
     if (!recipients || recipients.length === 0) {
-      throw new BadRequestException('No recipients provided.');
+      throw new BadRequestException('No matching customers found for this segment.');
     }
 
     // Prepare recipients for bulk insert
-    const bulkRecipients = recipients.map((recipient) => {
+    const bulkRecipients = recipients.map((customer) => {
       let renderedBody = campaign.body;
-      renderedBody = renderedBody.replace(/\{\{first_name\}\}/g, recipient.name || '');
-      // Add other merge tags replacement if needed in the future
+      // Use customer.firstName or whatever name field is appropriate
+      renderedBody = renderedBody.replace(/\{\{first_name\}\}/g, customer.firstName || '');
 
       return {
         campaignId: campaign._id,
-        customerId: recipient.customerId,
-        name: recipient.name,
-        phone: recipient.phone,
+        customerId: customer._id,
+        name: customer.firstName + (customer.lastName ? ' ' + customer.lastName : ''),
+        phone: customer.phone,
         renderedBody,
         status: 'pending',
       };
