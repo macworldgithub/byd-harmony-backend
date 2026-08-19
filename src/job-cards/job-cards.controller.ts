@@ -4,7 +4,7 @@ import { CreateJobCardDto, UpdateJobCardDto, JobCardItemDto } from './dto/job-ca
 import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
 import { CurrentUser } from '../common/decorators/current-user.decorator';
 import { getEffectiveLocationId } from '../common/utils/location-access';
-import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiBearerAuth, ApiQuery } from '@nestjs/swagger';
 
 @ApiTags('job-cards')
 @ApiBearerAuth()
@@ -21,6 +21,7 @@ export class JobCardsController {
 
   @Get()
   @ApiOperation({ summary: 'Get all job cards paginated' })
+  @ApiQuery({ name: 'locationId', required: false, type: String })
   findAll(@Query() query: any, @Query('locationId') locationId?: string, @CurrentUser() user?: any) {
     return this.jobCardsService.findAll(query, getEffectiveLocationId(user, locationId));
   }

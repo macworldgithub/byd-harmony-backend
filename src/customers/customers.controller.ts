@@ -22,12 +22,14 @@ export class CustomersController {
   @Get('search')
   @ApiOperation({ summary: 'Search customers for dropdowns' })
   @ApiQuery({ name: 'q', required: true })
+  @ApiQuery({ name: 'locationId', required: false, type: String })
   search(@Query('q') q: string, @Query('locationId') locationId?: string, @CurrentUser() user?: any) {
     return this.customersService.search(q, getEffectiveLocationId(user, locationId));
   }
 
   @Get()
   @ApiOperation({ summary: 'Get all customers paginated' })
+  @ApiQuery({ name: 'locationId', required: false, type: String })
   findAll(@Query() query: any, @Query('locationId') locationId?: string, @CurrentUser() user?: any) {
     return this.customersService.findAll(query, getEffectiveLocationId(user, locationId));
   }
