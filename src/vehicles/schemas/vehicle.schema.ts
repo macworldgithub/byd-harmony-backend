@@ -56,6 +56,10 @@ export class Vehicle {
 
   @Prop({ default: false })
   isDeleted: boolean;
+
+  @Prop({ default: false })
+  onOffer: boolean;
+
 }
 
 export const VehicleSchema = SchemaFactory.createForClass(Vehicle);

@@ -7,13 +7,13 @@ import { getEffectiveLocationId } from '../common/utils/location-access';
 import { ApiTags, ApiOperation, ApiBearerAuth, ApiQuery } from '@nestjs/swagger';
 
 @ApiTags('locations')
-@ApiBearerAuth()
-@UseGuards(JwtAuthGuard)
 @Controller('locations')
 export class LocationsController {
   constructor(private readonly locationsService: LocationsService) {}
 
   @Post()
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
   @ApiOperation({ summary: 'Create a new location' })
   create(@Body() createLocationDto: CreateLocationDto) {
     return this.locationsService.create(createLocationDto);
@@ -40,12 +40,16 @@ export class LocationsController {
   }
 
   @Put(':id')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
   @ApiOperation({ summary: 'Update a location' })
   update(@Param('id') id: string, @Body() updateLocationDto: UpdateLocationDto) {
     return this.locationsService.update(id, updateLocationDto);
   }
 
   @Delete(':id')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
   @ApiOperation({ summary: 'Soft delete a location' })
   remove(@Param('id') id: string) {
     return this.locationsService.remove(id);

@@ -16,7 +16,10 @@ import { UpdateApiKeyDto } from './dto/update-api-key.dto';
 import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
 import { CurrentUser } from '../common/decorators/current-user.decorator';
 import { getEffectiveLocationId } from '../common/utils/location-access';
+import { ApiTags, ApiBearerAuth, ApiOperation, ApiQuery } from '@nestjs/swagger';
 
+@ApiTags('api-keys')
+@ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
 @Controller('api-keys')
 export class ApiKeysController {
@@ -26,6 +29,7 @@ export class ApiKeysController {
    * Creates a new API key. Returns the plaintext key once in the response.
    */
   @Post()
+  @ApiOperation({ summary: 'Create a new API key' })
   async create(@Body() createApiKeyDto: CreateApiKeyDto) {
     return this.apiKeysService.create(createApiKeyDto);
   }
@@ -34,6 +38,8 @@ export class ApiKeysController {
    * Retrieves all API keys.
    */
   @Get()
+  @ApiOperation({ summary: 'Retrieve all API keys' })
+  @ApiQuery({ name: 'locationId', required: false, type: String })
   async findAll(@Query('locationId') locationId?: string, @CurrentUser() user?: any) {
     return this.apiKeysService.findAll(getEffectiveLocationId(user, locationId));
   }
@@ -42,6 +48,7 @@ export class ApiKeysController {
    * Retrieves a specific API key by ID.
    */
   @Get(':id')
+  @ApiOperation({ summary: 'Retrieve a specific API key by ID' })
   async findById(@Param('id') id: string, @CurrentUser() user?: any) {
     return this.apiKeysService.findById(id, getEffectiveLocationId(user));
   }
@@ -50,6 +57,7 @@ export class ApiKeysController {
    * Updates a specific API key.
    */
   @Patch(':id')
+  @ApiOperation({ summary: 'Update a specific API key' })
   async update(
     @Param('id') id: string,
     @Body() updateApiKeyDto: UpdateApiKeyDto,
@@ -62,6 +70,7 @@ export class ApiKeysController {
    */
   @Post(':id/rotate')
   @HttpCode(200)
+  @ApiOperation({ summary: 'Rotate a specific API key' })
   async rotate(@Param('id') id: string) {
     return this.apiKeysService.rotate(id);
   }
@@ -70,6 +79,7 @@ export class ApiKeysController {
    * Revokes a specific API key.
    */
   @Delete(':id')
+  @ApiOperation({ summary: 'Revoke a specific API key' })
   async revoke(@Param('id') id: string) {
     return this.apiKeysService.revoke(id);
   }

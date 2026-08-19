@@ -62,6 +62,10 @@ export class CreateVehicleDto {
   @IsOptional()
   @IsDateString()
   warrantyExpiry?: Date;
+
+  @ApiPropertyOptional({ default: false })
+  @IsOptional()
+  onOffer?: boolean;
 }
 
 export class UpdateVehicleDto extends CreateVehicleDto {}

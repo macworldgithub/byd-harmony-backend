@@ -22,6 +22,9 @@ export class VehiclesService {
 
     if (query.customerId) filter.customerId = query.customerId;
     if (query.status) filter.status = query.status;
+    if (query.onOffer !== undefined) {
+      filter.onOffer = query.onOffer === 'true' || query.onOffer === true;
+    }
 
     if (locationId) {
       const objectId = new mongoose.Types.ObjectId(locationId);
@@ -44,6 +47,9 @@ export class VehiclesService {
     const filter: any = { isDeleted: false };
 
     if (query.customerId) filter.customerId = query.customerId;
+    if (query.onOffer !== undefined) {
+      filter.onOffer = query.onOffer === 'true' || query.onOffer === true;
+    }
 
     if (locationId) {
       const objectId = new mongoose.Types.ObjectId(locationId);
