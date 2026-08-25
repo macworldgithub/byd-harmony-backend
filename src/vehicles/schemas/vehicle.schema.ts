@@ -36,7 +36,7 @@ export class Vehicle {
   @Prop()
   odometerUpdatedAt: Date;
 
-  @Prop({ enum: ['active', 'disposed', 'traded', 'written_off'], default: 'active' })
+  @Prop({ enum: ['IN-STOCK', 'ON-OFFER', 'SOLD', 'RETURNED', 'IN-TRANSIT', 'ALL STOCK', 'CLAIMS', 'NETWORK', 'PARTS LIST', 'PLATES'], default: 'IN-STOCK' })
   status: string;
 
   @Prop()
@@ -57,8 +57,6 @@ export class Vehicle {
   @Prop({ default: false })
   isDeleted: boolean;
 
-  @Prop({ default: false })
-  onOffer: boolean;
 
 }
 
