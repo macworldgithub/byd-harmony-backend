@@ -18,6 +18,7 @@ import { ScheduleDeliveriesModule } from './schedule-deliveries/schedule-deliver
 import { ContractorsModule } from './contractors/contractors.module';
 import { TemplatesModule } from './templates/templates.module';
 import { BulkCampaignsModule } from './bulk-campaigns/bulk-campaigns.module';
+import { CustomerThreadsModule } from './customer-threads/customer-threads.module';
 
 
 @Module({
@@ -45,6 +46,7 @@ import { BulkCampaignsModule } from './bulk-campaigns/bulk-campaigns.module';
     ContractorsModule,
     TemplatesModule,
     BulkCampaignsModule,
+    CustomerThreadsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
